@@ -1,0 +1,18 @@
+{
+  "name": "md-task",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Markdown-first task management. Tasks-plugin compatible, no Obsidian lock-in.",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @md-task/core && npm run build -w @md-task/app",
+    "test": "npm run test -w @md-task/core",
+    "dev": "npm run dev -w @md-task/app",
+    "typecheck": "npm run typecheck -w @md-task/core && npm run typecheck -w @md-task/app"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

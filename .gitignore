@@ -1,0 +1,19 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+*.tsbuildinfo
+
+# vite
+.vite/
+
+# future tauri / rust
+target/
+src-tauri/target/
+
+# os / editor
+.DS_Store
+*.local
+.idea/
+.vscode/
