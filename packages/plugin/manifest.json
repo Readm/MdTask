@@ -1,0 +1,9 @@
+{
+  "id": "md-task",
+  "name": "MdTask",
+  "version": "0.2.0",
+  "minAppVersion": "1.5.0",
+  "description": "Markdown-first tree todo. Tab to nest, ▼ to collapse, done tasks never disappear.",
+  "author": "Readm",
+  "isDesktopOnly": false
+}

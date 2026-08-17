@@ -1,7 +1,7 @@
 {
   "name": "@md-task/core",
   "version": "0.1.0",
-  "description": "Markdown task parsing / querying engine. Pure TS, zero runtime deps.",
+  "description": "Markdown tree-task parsing and editing engine. Pure TS, zero runtime deps.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

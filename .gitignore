@@ -5,6 +5,9 @@ node_modules/
 dist/
 *.tsbuildinfo
 
+# gui test evidence
+.gui-test-evidence/
+
 # vite
 .vite/
 

@@ -7,10 +7,10 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w @md-task/core && npm run build -w @md-task/app",
+    "build": "npm run build -w @md-task/core && npm run build -w @md-task/app && npm run build -w @md-task/plugin",
     "test": "npm run test -w @md-task/core",
     "dev": "npm run dev -w @md-task/app",
-    "typecheck": "npm run typecheck -w @md-task/core && npm run typecheck -w @md-task/app"
+    "typecheck": "npm run typecheck -w @md-task/core && npm run typecheck -w @md-task/app && npm run typecheck -w @md-task/plugin"
   },
   "devDependencies": {
     "typescript": "^5.5.0"

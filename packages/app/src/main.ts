@@ -13,7 +13,7 @@ app.innerHTML = `
         <li><code>@md-task/core</code> — markdown task parsing engine (pure TS, zero deps)</li>
         <li><code>@md-task/app</code> — this GUI shell (Vite + TypeScript)</li>
       </ul>
-      <p class="status">Roadmap: query DSL, dates/recurrence, statuses, folder watching, sync-friendly editing, Tauri desktop wrapper.</p>
+      <p class="status">Roadmap: tree-editor interactions, folder watching, sync-friendly editing, Tauri desktop wrapper.</p>
     </section>
 
     <section class="card">
@@ -32,6 +32,7 @@ const input = document.querySelector<HTMLTextAreaElement>('#md-input')!;
 const result = document.querySelector<HTMLPreElement>('#result')!;
 
 document.querySelector('#parse-btn')!.addEventListener('click', async () => {
-  const { parseTasks } = await import('@md-task/core');
-  result.textContent = JSON.stringify(parseTasks(input.value), null, 2);
+  const { parseDocument } = await import('@md-task/core');
+  const d = parseDocument(input.value);
+  result.textContent = JSON.stringify(d.tasks, null, 2);
 });

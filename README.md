@@ -1,44 +1,83 @@
 # MdTask
 
-Markdown-first 任务管理工具：**任务就是纯 markdown 文本**，没有任何私有存储格式。
+Markdown-first 树状任务工具：**任务就是纯 markdown 文本**，没有任何私有存储格式。
 
-- 兼容 [obsidian-tasks](https://github.com/obsidian-tasks-group/obsidian-tasks) 的任务格式（checkbox + emoji 元数据），存量笔记零迁移
-- 不绑定 Obsidian：独立图形界面，你的笔记文件仍然是普通 `.md` 文件
-- 多端同步友好：文件即数据库，配合 Syncthing / iCloud / Git 等任意同步方案，应用监听文件变更热刷新
+> MdTask is a markdown-first tree todo tool: your tasks ARE plain markdown files.
 
-## 项目结构
+- 面向会用 markdown 的人：零学习成本，Tab 缩进为子任务，Shift+Tab 提升层级，` ▼` 折叠子树，完成的任务永远留在列表里
+- **协议 + 多应用**：核心是一份格式规范（`docs/protocol.md`），Obsidian 插件是第一个实现，桌面/手机 app 在路上
+- 多端同步友好：文件即数据库，配合 iCloud / Syncthing / Git 任意同步方案
+- 兼容 [obsidian-tasks](https://github.com/obsidian-tasks-group/obsidian-tasks) 格式（单向子集，存量笔记零迁移）
 
-```
-MdTask/
-├── packages/
-│   ├── core/          # @md-task/core  任务解析/查询引擎（纯 TS，零运行时依赖）
-│   └── app/           # @md-task/app   GUI 壳（Vite + TS，未来 Tauri 套壳）
-├── package.json       # npm workspaces 根
-└── tsconfig.base.json
-```
+## 用法 Usage
 
-## 开发
+在 Obsidian 中启用插件后（设置 → 第三方插件）：
+
+| 操作 | 方式 |
+|------|------|
+| 缩进为子任务 | 光标在任务行按 `Tab` |
+| 提升层级 | `Shift+Tab` |
+| 切换勾选 | `Cmd/Ctrl+Enter`（插件绑定）或任务树视图中点击 |
+| 折叠/展开子树 | 命令面板：MdTask 折叠/展开；或任务树视图点 `▼`/`▶` |
+| 插入任务 / 上移 / 下移 / 删除（含子树） | 命令面板搜 "MdTask" |
+
+> 说明：Obsidian 1.13 起内置勾选命令改用 `Cmd+L`，MdTask 插件显式绑定
+> `Cmd/Ctrl+Enter` 到自己的切换命令（可在 Obsidian 快捷键设置中改绑）。
+
+折叠状态通过行尾 ` ▼` 标记写入文件——展开无标记，文件始终是干净的标准 markdown。
+Collapse state is stored as a trailing ` ▼` marker — expanded tasks carry no marker.
+
+任务树视图：命令面板 → "打开 MdTask 任务树视图"，当前文件的任务以树形展示，
+点击勾选直接回写文件，已完成任务保留原位（淡化不隐藏——不会消失）。
+
+## 开发 Development
 
 ```bash
 npm install
-npm test          # core 单元测试（node:test + tsx）
-npm run dev       # GUI 开发服务器 (http://localhost:5173)
-npm run build     # 构建 core + app
+npm test          # core 单元测试（35+ 用例，含 10MB 性能验收）
+npm run dev       # GUI 壳开发服务器（http://localhost:5173）
+npm run typecheck # 全包类型检查
+npm run build     # 构建 core + app + Obsidian 插件
+```
+
+插件产物在 `packages/plugin/dist/`（main.js + manifest.json + styles.css），
+复制到任意 vault 的 `.obsidian/plugins/md-task/` 即可加载。
+
+## 项目结构 Structure
+
+```
+MdTask/
+├── docs/
+│   ├── protocol.md    # 协议规范（格式宪法，所有实现以此为准）
+│   ├── VISION.md      # 产品愿景与决策记录
+│   └── FEATURES.md    # 功能清单与优先级
+├── packages/
+│   ├── core/          # @md-task/core 协议参考实现（纯 TS，零依赖）
+│   ├── plugin/        # @md-task/plugin Obsidian 插件（首个实现）
+│   └── app/           # @md-task/app GUI 壳（Vite；桌面 Tauri 套壳前身）
+└── tsconfig.base.json
 ```
 
 ## Roadmap
 
-- [x] Monorepo 骨架 + 最小 markdown 任务行解析器（v0.1）
-- [ ] 完整任务模型：due/scheduled/start/done 日期、优先级、重复任务、自定义状态（迁移自 obsidian-tasks 核心，MIT）
-- [ ] 查询 DSL（````tasks` 语法兼容）
-- [ ] 文件夹扫描 + 文件监听（多端同步热刷新）
-- [ ] 任务编辑回写（原地 patch，保持其他 markdown 内容不变）
-- [ ] GUI：任务列表 / 看板 / 日历视图
-- [ ] Tauri 桌面壳（需要 Rust 工具链）
+- [x] v0.1 monorepo 骨架
+- [x] v0.2 协议文档 + core（解析/编辑原语/性能）+ Obsidian 插件 MVP（编辑核心 + 树视图）
+- [ ] 桌面 app（Tauri）：文件夹模式、文件监听热刷新、轻量冲突提示
+- [ ] 手机 app：触屏树编辑（iOS/Android）
+- [ ] 插件上架 Obsidian 社区市场
 
-## 致谢
+## 已知缺口 Known gaps (v0.2)
 
-任务格式与核心设计参考 [obsidian-tasks](https://github.com/obsidian-tasks-group/obsidian-tasks)（MIT License），其核心解析/查询模块计划以 MIT 许可直接抽取复用。
+- 代码块内形如 `- [ ]` 的行**不会**被识别为任务（协议 A3：核心解析器按行级规则、
+  不感知代码块；壳层感知是后续版本的工作，v0.2 未实现）。含代码块的笔记中，
+  编辑器 Tab/Shift+Tab 仍会对代码块内的这类行生效——如需规避请手动调整。
+  Code-fence awareness is a shell-layer duty (protocol §6); not implemented in v0.2.
+
+## 致谢 Acknowledgements
+
+任务格式与设计理念参考 [obsidian-tasks](https://github.com/obsidian-tasks-group/obsidian-tasks)
+（MIT License）。MdTask 自研核心实现，未复用其代码；本协议是其格式的子集，
+obsidian-tasks 可无缝读取 MdTask 文件。
 
 ## License
 

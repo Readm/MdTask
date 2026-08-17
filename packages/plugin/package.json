@@ -1,0 +1,20 @@
+{
+  "name": "@md-task/plugin",
+  "version": "0.2.0",
+  "description": "MdTask Obsidian plugin: markdown-first tree todo editor.",
+  "private": true,
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "node esbuild.config.mjs production",
+    "typecheck": "tsc --noEmit",
+    "test": "echo 'plugin tests live in core; see CI'"
+  },
+  "dependencies": {
+    "@md-task/core": "0.1.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "obsidian": "^1.7.2",
+    "typescript": "^5.5.0"
+  }
+}
