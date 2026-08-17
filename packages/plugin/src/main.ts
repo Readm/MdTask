@@ -23,10 +23,10 @@ export default class MdTaskPlugin extends Plugin {
       callback: () => this.activateTreeView(),
     });
 
-    // Cmd/Ctrl+Enter is bound explicitly: Obsidian 1.13 renamed its built-in
+    // Ctrl+Enter is bound explicitly: Obsidian 1.13 renamed its built-in
     // toggle command (Cmd+L), so relying on the old default leaves no binding.
     this.editCommand('toggle-checkbox', '切换当前任务勾选', 'toggle', [
-      { modifiers: ['Mod'], key: 'Enter' },
+      { modifiers: ['Ctrl'], key: 'Enter' },
     ]);
     this.editCommand('indent-task', '缩进为子任务', 'indent');
     this.editCommand('outdent-task', '提升层级', 'outdent');

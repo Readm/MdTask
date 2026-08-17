@@ -3,13 +3,13 @@ import { Prec, Extension } from '@codemirror/state';
 import * as core from '@md-task/core';
 
 /**
- * Tab / Shift+Tab / Mod+Enter handling on task lines (docs/FEATURES.md C2/C3).
+ * Tab / Shift+Tab / Ctrl+Enter handling on task lines (docs/FEATURES.md C2/C3).
  * - On a task line: Tab indents (becomes a subtask of the previous task),
- *   Shift+Tab outdents (raises level), Mod+Enter toggles the checkbox.
+ *   Shift+Tab outdents (raises level), Ctrl+Enter toggles the checkbox.
  *   All via core primitives, undoable.
  * - On any other line: returns false, letting Obsidian's default behaviour run.
  *
- * Mod+Enter is handled here (CodeMirror keymap) rather than via
+ * Ctrl+Enter is handled here (CodeMirror keymap) rather than via
  * addCommand({hotkeys}): Obsidian 1.13.7 does not register default hotkeys
  * from the command object (verified via hotkeyManager.bakedHotkeys), so the
  * keymap path is the reliable one. The command itself still exists for the
@@ -20,7 +20,7 @@ export function taskIndentExtension(): Extension {
     keymap.of([
       { key: 'Tab', run: (view) => handleTab(view, 'indent') },
       { key: 'Shift-Tab', run: (view) => handleTab(view, 'outdent') },
-      { key: 'Mod-Enter', run: (view) => handleToggle(view) },
+      { key: 'Ctrl-Enter', run: (view) => handleToggle(view) },
     ]),
   );
 }

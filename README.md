@@ -17,12 +17,12 @@ Markdown-first 树状任务工具：**任务就是纯 markdown 文本**，没有
 |------|------|
 | 缩进为子任务 | 光标在任务行按 `Tab` |
 | 提升层级 | `Shift+Tab` |
-| 切换勾选 | `Cmd/Ctrl+Enter`（插件绑定）或任务树视图中点击 |
+| 切换勾选 | `Ctrl+Enter`（插件绑定）或任务树视图中点击 |
 | 折叠/展开子树 | 命令面板：MdTask 折叠/展开；或任务树视图点 `▼`/`▶` |
 | 插入任务 / 上移 / 下移 / 删除（含子树） | 命令面板搜 "MdTask" |
 
 > 说明：Obsidian 1.13 起内置勾选命令改用 `Cmd+L`，MdTask 插件显式绑定
-> `Cmd/Ctrl+Enter` 到自己的切换命令（可在 Obsidian 快捷键设置中改绑）。
+> `Ctrl+Enter` 到自己的切换命令（可在 Obsidian 快捷键设置中改绑）。
 
 折叠状态通过行尾 ` ▼` 标记写入文件——展开无标记，文件始终是干净的标准 markdown。
 Collapse state is stored as a trailing ` ▼` marker — expanded tasks carry no marker.
