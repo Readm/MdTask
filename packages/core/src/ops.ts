@@ -143,7 +143,7 @@ export function deleteTask(lines: string[], line: number): OpResult {
 }
 
 /**
- * Set (or clear) the collapse marker ` ▼` on a task line (§2.1).
+ * Set (or clear) the collapse marker ` ▶` on a task line (§2.1).
  * Expanded state carries no marker; only the marker is touched.
  */
 export function setCollapsed(lines: string[], line: number, collapsed: boolean): OpResult {
@@ -152,7 +152,7 @@ export function setCollapsed(lines: string[], line: number, collapsed: boolean):
   const t = cur !== undefined ? parseTaskLine(cur, line) : null;
   if (!t) return { lines, changed: false };
   if (t.collapsed === collapsed) return { lines, changed: false };
-  const newLine = collapsed ? cur! + ' ▼' : cur!.replace(/ ▼$/, '');
+  const newLine = collapsed ? cur! + ' ▶' : cur!.replace(/ ▶$/, '');
   return changedAt(lines, idx, newLine);
 }
 

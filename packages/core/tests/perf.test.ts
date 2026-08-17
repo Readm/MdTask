@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { parseDocument, toggle } from '../src/index.js';
 
 const TARGET_MB = 10;
-const LINE = '- [ ] task item with some text for perf ▼\r\n';
+const LINE = '- [ ] task item with some text for perf ▶\r\n';
 // Protocol §9 acceptance (200ms/5ms) targets an M-series reference machine.
 // CI runners are slower — relax there to keep the perf test a regression
 // guard rather than a hardware benchmark.

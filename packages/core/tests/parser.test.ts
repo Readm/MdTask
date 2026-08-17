@@ -18,7 +18,7 @@ test('parseTaskLine: keeps indent and raw line', () => {
 });
 
 test('parseTaskLine: collapse marker stripped from text', () => {
-  const t = parseTaskLine('- [ ] parent ▼', 1);
+  const t = parseTaskLine('- [ ] parent ▶', 1);
   assert.equal(t?.collapsed, true);
   assert.equal(t?.text, 'parent');
 });
@@ -29,14 +29,14 @@ test('parseTaskLine: no marker when absent, text kept verbatim', () => {
   assert.equal(t?.text, 'parent');
 });
 
-test('parseTaskLine: ▼ mid-text is NOT a collapse marker', () => {
-  const t = parseTaskLine('- [ ] watch ▼ video', 1);
+test('parseTaskLine: ▶ mid-text is NOT a collapse marker', () => {
+  const t = parseTaskLine('- [ ] watch ▶ video', 1);
   assert.equal(t?.collapsed, false);
-  assert.equal(t?.text, 'watch ▼ video');
+  assert.equal(t?.text, 'watch ▶ video');
 });
 
-test('parseTaskLine: multiple spaces before ▼ keep text', () => {
-  const t = parseTaskLine('- [ ] foo  ▼', 1);
+test('parseTaskLine: multiple spaces before ▶ keep text', () => {
+  const t = parseTaskLine('- [ ] foo  ▶', 1);
   assert.equal(t?.collapsed, true);
   assert.equal(t?.text, 'foo ');
 });
@@ -48,7 +48,7 @@ test('parseTaskLine: non-task lines return null', () => {
 });
 
 test('parseDocument: collects tasks with original line numbers', () => {
-  const doc = '# Todo\n\n- [ ] one\n- [x] two\n\npara\n- [ ] three ▼\n';
+  const doc = '# Todo\n\n- [ ] one\n- [x] two\n\npara\n- [ ] three ▶\n';
   const d = parseDocument(doc);
   assert.equal(d.lineEnding, '\n');
   assert.deepEqual(

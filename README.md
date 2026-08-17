@@ -4,7 +4,7 @@ Markdown-first 树状任务工具：**任务就是纯 markdown 文本**，没有
 
 > MdTask is a markdown-first tree todo tool: your tasks ARE plain markdown files.
 
-- 面向会用 markdown 的人：零学习成本，Tab 缩进为子任务，Shift+Tab 提升层级，` ▼` 折叠子树，完成的任务永远留在列表里
+- 面向会用 markdown 的人：零学习成本，Tab 缩进为子任务，Shift+Tab 提升层级，` ▶` 折叠子树，完成的任务永远留在列表里
 - **协议 + 多应用**：核心是一份格式规范（`docs/protocol.md`），Obsidian 插件是第一个实现，桌面/手机 app 在路上
 - 多端同步友好：文件即数据库，配合 iCloud / Syncthing / Git 任意同步方案
 - 兼容 [obsidian-tasks](https://github.com/obsidian-tasks-group/obsidian-tasks) 格式（单向子集，存量笔记零迁移）
@@ -17,14 +17,14 @@ Markdown-first 树状任务工具：**任务就是纯 markdown 文本**，没有
 |------|------|
 | 缩进为子任务 / 提升层级 | `Tab` / `Shift+Tab`（Obsidian 原生列表缩进） |
 | 切换勾选 | `Ctrl+Enter`（插件绑定）或 `Cmd+L`（Obsidian 内置）或点击 checkbox |
-| 折叠 / 展开子树 | 编辑器自带的折叠箭头——**折叠状态自动写入行尾 ` ▼` 标记**（协议持久化，多端共享）；文件里带 ` ▼` 的任务打开时自动折叠 |
+| 折叠 / 展开子树 | 编辑器自带的折叠箭头——**折叠状态自动写入行尾 ` ▶` 标记**（协议持久化，多端共享）；文件里带 ` ▶` 的任务打开时自动折叠 |
 | 任务上移/下移、删除 | Obsidian 原生命令（移动行上/下、删除行） |
 
-插件只做两件事：绑定 `Ctrl+Enter` 勾选、把原生折叠状态同步为 ` ▼` 标记（双向）。
+插件只做两件事：绑定 `Ctrl+Enter` 勾选、把原生折叠状态同步为 ` ▶` 标记（双向）。
 无面板、无新 UI——编辑器就是视图。
 
 > 说明：Obsidian 1.13 起内置勾选命令为 `Cmd+L`；`Ctrl+Enter` 由 MdTask 绑定
-> （可在 Obsidian 快捷键设置中改绑）。折叠标记 ` ▼` 是纯文本，Obsidian 原生
+> （可在 Obsidian 快捷键设置中改绑）。折叠标记 ` ▶` 是纯文本，Obsidian 原生
 > 视图下显示为普通字符，折叠交互走原生箭头。
 
 ## 开发 Development
@@ -44,7 +44,7 @@ npm run build     # 构建 core + app + Obsidian 插件
 
 **克制与复用优先**（docs/principles.md）：宿主已有的能力直接复用，不重复造轮子、
 不创建多余面板。Obsidian 端只新增协议需要而宿主缺失的东西（Ctrl+Enter 绑定、
-原生折叠 ↔ ` ▼` 标记同步）。
+原生折叠 ↔ ` ▶` 标记同步）。
 
 ## 项目结构 Structure
 

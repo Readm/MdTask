@@ -4,7 +4,7 @@ import type { Document, Task } from './model.js';
  * Task line regex — see docs/protocol.md §2.
  * Groups: 1=indent, 2=marker, 3=checkbox, 4=text, 5=collapse marker (optional).
  */
-const TASK_LINE_RE = /^(\s*)([-*+])\s+\[([ xX])\]\s*(.*?)(\s?▼)?$/;
+const TASK_LINE_RE = /^(\s*)([-*+])\s+\[([ xX])\]\s*(.*?)(\s?▶)?$/;
 
 /** Parse a single line into a Task, or null if the line is not a checklist item. */
 export function parseTaskLine(line: string, lineNumber: number): Task | null {

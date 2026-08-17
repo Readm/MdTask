@@ -18,35 +18,59 @@ function asFoldable(editor: Editor): FoldableEditor {
 
 /**
  * Two-way sync between Obsidian's NATIVE fold state and the protocol's
- * trailing-▼ collapse marker (docs/interop.md, FEATURES A5).
+ * trailing-▶ collapse marker (docs/interop.md, FEATURES A5).
  *
  * Design (user-directed, minimal — docs/principles.md): reuse the editor's
  * built-in fold arrows as the ONLY collapse UI; this module just keeps the
  * protocol state in step:
  *
- *   - user clicks the native fold arrow  -> ▼ is written to the file
- *   - file carries ▼ on open             -> the subtree is folded natively
+ *   - user clicks the native fold arrow  -> ▶ is written to the file
+ *     IMMEDIATELY (click event drives the sync, ~100ms; no polling wait)
+ *   - file carries ▶ on open             -> the subtree is folded natively
  *     (via the same native fold arrow, located through the cm6 DOM)
  *
  * Mechanics (all verified on Obsidian 1.13.7):
  *   - editor.getFoldOffsets() returns a Set of CHARACTER OFFSETS marking
  *     folded region starts; editor.offsetToPos() maps them to line numbers
  *   - foldable list items expose div.collapse-indicator in their cm-line;
- *     clicking it is the native fold action
- *   - no fold-change event exists -> cheap 1s poll guarded by content hash
- *     and fold-state comparison; only task lines are ever touched (folding a
- *     heading writes no marker)
+ *     clicking it is the native fold action (captured document-wide)
+ *   - polling (1s) remains only as a fallback for non-click fold paths
+ *     (foldLess/foldMore commands, etc.); content-hash guard skips parsing
+ *     when nothing changed
+ *   - writes touch ONLY the affected task line (editor.setLine), never the
+ *     whole file; non-task folds (headings) never write markers
  */
 export class FoldSync {
   private timer: number | undefined;
   private lastFolded: number[] = [];
   private lastDocHash = '';
+  private clickTimer: number | undefined;
 
   constructor(private plugin: MdTaskPlugin) {}
 
   start(): void {
-    this.timer = window.setInterval(() => this.tick(), 1000);
-    this.plugin.register(() => window.clearInterval(this.timer));
+    // Immediate path: user clicks a native fold arrow -> sync right away
+    // (capture phase so it fires before Obsidian's own handlers settle).
+    this.plugin.registerDomEvent(
+      document,
+      'click',
+      (evt: MouseEvent) => {
+        const target = evt.target as HTMLElement | null;
+        if (!target?.closest?.('.collapse-indicator')) return;
+        window.clearTimeout(this.clickTimer);
+        this.clickTimer = window.setTimeout(() => this.tick(), 120);
+      },
+      true,
+    );
+    // Fallback path: fold changes from commands / other sources. 250ms keeps
+    // sync feeling immediate even if the click capture misses (e.g. arrow
+    // rendered with a different class in folded state). Parsing is guarded
+    // by the content hash, so idle polling is ~free.
+    this.timer = window.setInterval(() => this.tick(), 250);
+    this.plugin.register(() => {
+      window.clearInterval(this.timer);
+      window.clearTimeout(this.clickTimer);
+    });
   }
 
   private tick(): void {
@@ -70,7 +94,7 @@ export class FoldSync {
 
     // Direction arbitration:
     //  - content changed (file opened / edited) -> markers are authoritative:
-    //    fold natively whatever carries ▼ (read direction)
+    //    fold natively whatever carries ▶ (read direction)
     //  - only fold state changed (user clicked an arrow) -> UI is
     //    authoritative: write/clear markers to match (write direction)
     const hash = core.contentHash(text);
@@ -82,32 +106,37 @@ export class FoldSync {
 
     const doc = core.parseDocument(text);
     const taskAt = new Map<number, core.Task>(); // 0-based line -> task
-    const collapsed = new Set<number>(); // 0-based lines carrying ▼
+    const collapsed = new Set<number>(); // 0-based lines carrying ▶
     for (const t of doc.tasks) {
       taskAt.set(t.lineNumber - 1, t);
       if (t.collapsed) collapsed.add(t.lineNumber - 1);
     }
     const foldedSet2 = new Set(folded);
 
+    let wrote = false;
     if (contentChanged) {
-      // Read direction: ▼ marker -> native fold.
+      // Read direction: ▶ marker -> native fold.
       const toFold = [...collapsed].filter((n) => !foldedSet2.has(n) && taskAt.has(n));
       for (const n of toFold) this.foldRow(editor, n);
     } else if (!foldSame) {
-      // Write direction: native fold state -> ▼ marker.
+      // Write direction: native fold state -> ▶ marker (single-line edits only).
       const needMarker = folded.filter((n) => taskAt.has(n) && !collapsed.has(n));
       for (const n of needMarker) {
         const t = taskAt.get(n);
-        if (t && !t.raw.endsWith(' ▼')) editor.setLine(n, t.raw + ' ▼');
+        if (t && !t.raw.endsWith(' ▶')) editor.setLine(n, t.raw + ' ▶');
       }
       const needUnmark = [...collapsed].filter((n) => !foldedSet2.has(n));
       for (const n of needUnmark) {
         const cur = editor.getLine(n);
-        if (cur.endsWith(' ▼')) editor.setLine(n, cur.slice(0, -2));
+        if (cur.endsWith(' ▶')) editor.setLine(n, cur.slice(0, -2));
       }
+      wrote = needMarker.length > 0 || needUnmark.length > 0;
     }
 
-    this.lastDocHash = hash;
+    // Baseline bookkeeping: if we edited the text this tick, re-hash from the
+    // live editor so the NEXT tick does not misread 'content changed' (which
+    // would send it down the read direction instead of the write direction).
+    this.lastDocHash = wrote ? core.contentHash(editor.getValue()) : hash;
     this.lastFolded = folded;
   }
 

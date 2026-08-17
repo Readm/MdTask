@@ -8,7 +8,7 @@ const DOC = [
   '  - [ ] sub2',
   '- [ ] top2',
   'para line',
-  '- [x] done ▼',
+  '- [x] done ▶',
 ];
 
 function apply(fn: (...args: any[]) => { lines: string[]; changed: boolean }, line: number, ...rest: any[]) {
@@ -25,7 +25,7 @@ test('toggle: unchecked -> checked', () => {
 test('toggle: checked -> unchecked, keeps collapse marker', () => {
   const r = apply(toggle, 6);
   assert.equal(r.changed, true);
-  assert.equal(r.lines[5], '- [ ] done ▼');
+  assert.equal(r.lines[5], '- [ ] done ▶');
 });
 
 test('toggle: non-task line is no-op', () => {
@@ -46,8 +46,8 @@ test('indent: top-level first task is no-op', () => {
 });
 
 test('indent: keeps collapse marker', () => {
-  const r = indent(DOC.slice(), 6); // done ▼ is top-level... second task at depth 0
-  assert.equal(r.lines[5], '  - [x] done ▼');
+  const r = indent(DOC.slice(), 6); // done ▶ is top-level... second task at depth 0
+  assert.equal(r.lines[5], '  - [x] done ▶');
 });
 
 test('outdent: -2 spaces', () => {
@@ -88,7 +88,7 @@ test('move up: swaps whole subtree block with previous block', () => {
     '- [ ] top2',
     'para line',
     '  - [ ] sub2',
-    '- [x] done ▼',
+    '- [x] done ▶',
   ]);
 });
 
@@ -106,7 +106,7 @@ test('move down: swaps with next block', () => {
     '- [ ] top1',
     '  - [ ] sub1',
     '  - [ ] sub2',
-    '- [x] done ▼',
+    '- [x] done ▶',
   ]);
 });
 
@@ -121,7 +121,7 @@ test('deleteTask: removes whole subtree block', () => {
   assert.deepEqual(r.lines, [
     '- [ ] top2',
     'para line',
-    '- [x] done ▼',
+    '- [x] done ▶',
   ]);
 });
 
@@ -133,7 +133,7 @@ test('deleteTask: non-task line is no-op', () => {
 test('setCollapsed: adds marker on expanded task', () => {
   const r = apply(setCollapsed, 1, true);
   assert.equal(r.changed, true);
-  assert.equal(r.lines[0], '- [ ] top1 ▼');
+  assert.equal(r.lines[0], '- [ ] top1 ▶');
 });
 
 test('setCollapsed: removes marker on collapsed task', () => {
@@ -194,16 +194,16 @@ test('move up: deep node physically moves above previous block', () => {
 });
 
 test('collapse marker survives toggle/indent/outdent', () => {
-  const withMark = ['- [ ] top', '  - [ ] sub ▼'];
-  assert.equal(toggle(withMark.slice(), 2).lines[1], '  - [x] sub ▼');
-  assert.equal(indent(withMark.slice(), 2).lines[1], '    - [ ] sub ▼');
-  assert.equal(outdent(['  - [ ] sub ▼'], 1).lines[0], '- [ ] sub ▼');
+  const withMark = ['- [ ] top', '  - [ ] sub ▶'];
+  assert.equal(toggle(withMark.slice(), 2).lines[1], '  - [x] sub ▶');
+  assert.equal(indent(withMark.slice(), 2).lines[1], '    - [ ] sub ▶');
+  assert.equal(outdent(['  - [ ] sub ▶'], 1).lines[0], '- [ ] sub ▶');
 });
 
 test('collapse marker travels with moved block', () => {
-  const withMark = ['- [ ] top ▼', '  - [ ] sub', '- [ ] other'];
+  const withMark = ['- [ ] top ▶', '  - [ ] sub', '- [ ] other'];
   const r = move(withMark.slice(), 1, 'down');
-  assert.deepEqual(r.lines, ['- [ ] other', '- [ ] top ▼', '  - [ ] sub']);
+  assert.deepEqual(r.lines, ['- [ ] other', '- [ ] top ▶', '  - [ ] sub']);
 });
 
 test('primitives on CRLF line arrays keep \\r intact (no-op or exact)', () => {
