@@ -11,24 +11,21 @@ Markdown-first 树状任务工具：**任务就是纯 markdown 文本**，没有
 
 ## 用法 Usage
 
-在 Obsidian 中启用插件后（设置 → 第三方插件）：
+在 Obsidian 中启用插件后，**一切操作都在编辑器里，用 Obsidian 原生能力**：
 
 | 操作 | 方式 |
 |------|------|
-| 缩进为子任务 | 光标在任务行按 `Tab` |
-| 提升层级 | `Shift+Tab` |
-| 切换勾选 | `Ctrl+Enter`（插件绑定）或任务树视图中点击 |
-| 折叠/展开子树 | 命令面板：MdTask 折叠/展开；或任务树视图点 `▼`/`▶` |
-| 插入任务 / 上移 / 下移 / 删除（含子树） | 命令面板搜 "MdTask" |
+| 缩进为子任务 / 提升层级 | `Tab` / `Shift+Tab`（Obsidian 原生列表缩进） |
+| 切换勾选 | `Ctrl+Enter`（插件绑定）或 `Cmd+L`（Obsidian 内置）或点击 checkbox |
+| 折叠 / 展开子树 | 编辑器自带的折叠箭头——**折叠状态自动写入行尾 ` ▼` 标记**（协议持久化，多端共享）；文件里带 ` ▼` 的任务打开时自动折叠 |
+| 任务上移/下移、删除 | Obsidian 原生命令（移动行上/下、删除行） |
 
-> 说明：Obsidian 1.13 起内置勾选命令改用 `Cmd+L`，MdTask 插件显式绑定
-> `Ctrl+Enter` 到自己的切换命令（可在 Obsidian 快捷键设置中改绑）。
+插件只做两件事：绑定 `Ctrl+Enter` 勾选、把原生折叠状态同步为 ` ▼` 标记（双向）。
+无面板、无新 UI——编辑器就是视图。
 
-折叠状态通过行尾 ` ▼` 标记写入文件——展开无标记，文件始终是干净的标准 markdown。
-Collapse state is stored as a trailing ` ▼` marker — expanded tasks carry no marker.
-
-任务树视图：命令面板 → "打开 MdTask 任务树视图"，当前文件的任务以树形展示，
-点击勾选直接回写文件，已完成任务保留原位（淡化不隐藏——不会消失）。
+> 说明：Obsidian 1.13 起内置勾选命令为 `Cmd+L`；`Ctrl+Enter` 由 MdTask 绑定
+> （可在 Obsidian 快捷键设置中改绑）。折叠标记 ` ▼` 是纯文本，Obsidian 原生
+> 视图下显示为普通字符，折叠交互走原生箭头。
 
 ## 开发 Development
 
@@ -40,8 +37,14 @@ npm run typecheck # 全包类型检查
 npm run build     # 构建 core + app + Obsidian 插件
 ```
 
-插件产物在 `packages/plugin/dist/`（main.js + manifest.json + styles.css），
+插件产物在 `packages/plugin/dist/`（main.js + manifest.json），
 复制到任意 vault 的 `.obsidian/plugins/md-task/` 即可加载。
+
+## 设计原则 Design principles
+
+**克制与复用优先**（docs/principles.md）：宿主已有的能力直接复用，不重复造轮子、
+不创建多余面板。Obsidian 端只新增协议需要而宿主缺失的东西（Ctrl+Enter 绑定、
+原生折叠 ↔ ` ▼` 标记同步）。
 
 ## 项目结构 Structure
 
@@ -49,6 +52,7 @@ npm run build     # 构建 core + app + Obsidian 插件
 MdTask/
 ├── docs/
 │   ├── protocol.md    # 协议规范（格式宪法，所有实现以此为准）
+│   ├── principles.md  # 设计原则：克制与复用优先（指导文档）
 │   ├── interop.md     # 与 Obsidian 原生功能的冲突处理（行为边界）
 │   ├── VISION.md      # 产品愿景与决策记录
 │   └── FEATURES.md    # 功能清单与优先级

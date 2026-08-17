@@ -34,7 +34,6 @@ const context = await esbuild.context({
 /** Copy the static plugin files next to the bundle. */
 function copyStatic() {
   copyFileSync('manifest.json', 'dist/manifest.json');
-  copyFileSync('styles.css', 'dist/styles.css');
 }
 
 if (prod) {
