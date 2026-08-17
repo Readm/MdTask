@@ -49,6 +49,7 @@ npm run build     # 构建 core + app + Obsidian 插件
 MdTask/
 ├── docs/
 │   ├── protocol.md    # 协议规范（格式宪法，所有实现以此为准）
+│   ├── interop.md     # 与 Obsidian 原生功能的冲突处理（行为边界）
 │   ├── VISION.md      # 产品愿景与决策记录
 │   └── FEATURES.md    # 功能清单与优先级
 ├── packages/
